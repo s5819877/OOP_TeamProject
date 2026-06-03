@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OOP_TeamProject.Room
+namespace OOP_TeamProject
 {
-    internal class StandardRoom
+    internal class CardPayment
     {
     }
 }
