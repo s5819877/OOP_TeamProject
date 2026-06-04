@@ -86,5 +86,16 @@ namespace OOP_TeamProject
             }
         }
 
+        // 델리게이트
+        public void PrintRooms(RoomFilter filter)
+        {
+            foreach (Room room in rooms) // 객실 목록 순서대로 확인
+            {
+                if (filter(room)) // 조건에 맞는 방만 출력
+                {
+                    Console.WriteLine(room);
+                }
+            }
+        }
     }
 }

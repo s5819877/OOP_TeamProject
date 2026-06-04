@@ -4,8 +4,8 @@ using System.Text;
 
 namespace OOP_TeamProject
 {
-    // 추상 클래스 1
-    abstract class Room
+    // 추상 클래스 1 + 표준 인터페이스
+    abstract class Room : IComparable<Room>
     {
         // 필드
         private int roomNumber;      // 방 번호
@@ -57,6 +57,12 @@ namespace OOP_TeamProject
             this.isAvailable = true;       // 처음엔 예약 가능 상태
             this.hasBreakfast = hasBreakfast; // 조식 여부 초기화
             this.maxGuests = maxGuests;     // 최대 인원 초기화
+        }
+
+        // 표준 인터페이스 구현
+        public int CompareTo(Room other)
+        {
+            return this.Price.CompareTo(other.Price); // 가격순으로 비교
         }
 
         // 추상 메서드 (자식이 반드시 구현해야 함)
