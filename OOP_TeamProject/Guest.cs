@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OOP_TeamProject
 {
-    class Guest
+    class Guest : IValidatable
     {
         // 필드
         private string name;           // 이름
@@ -40,6 +40,33 @@ namespace OOP_TeamProject
             this.age = age;                       // 나이 초기화
             this.phoneNumber = phoneNumber;        // 전화번호 초기화
             this.numberOfGuests = numberOfGuests;  // 인원 초기화
+        }
+
+        // out 키워드
+        public bool Validate(out string errorMessage)
+        {
+            if (name == "")
+            {
+                errorMessage = "이름을 입력해주세요.";
+                return false;
+            }
+            if (age < 0)
+            {
+                errorMessage = "나이가 올바르지 않습니다.";
+                return false;
+            }
+            if (age < 18)
+            {
+                errorMessage = "미성년자는 예약할 수 없습니다.";
+                return false;
+            }
+            if (phoneNumber == "")
+            {
+                errorMessage = "전화번호를 입력해주세요.";
+                return false;
+            }
+            errorMessage = ""; // 오류 없음
+            return true;
         }
 
         // 메서드 오버라이딩 (object 클래스)

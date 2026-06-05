@@ -4,8 +4,8 @@ using System.Text;
 
 namespace OOP_TeamProject
 {
-    // 추상 클래스 1 + 표준 인터페이스
-    abstract class Room : IComparable<Room>
+    // 추상 클래스 1 + 다중 인터페이스(표준 인터페이스, 인터페이스)
+    abstract class Room : IComparable<Room>, IBookable
     {
         // 필드
         private int roomNumber;      // 방 번호
@@ -65,8 +65,30 @@ namespace OOP_TeamProject
             return this.Price.CompareTo(other.Price); // 가격순으로 비교
         }
 
+        // 인터페이스 구현
+        public void Book()
+        {
+            IsAvailable = false; // 예약 중으로 변경
+        }
+
+        public void Cancel()
+        {
+            IsAvailable = true; // 예약 가능으로 변경
+        }
+
+        // protected 멤버
+        protected string GetBasicInfo()
+        {
+            return RoomNumber + "호 / 1박 " + Price + "원 / 최대 " + MaxGuests + "인"; // 기본 정보 반환
+        }
+
         // 추상 메서드 (자식이 반드시 구현해야 함)
-        public abstract override string ToString(); // 방 정보 출력
-        public abstract string GetInfo();           // 방 타입별 특징 설명
+        public abstract override string ToString(); // 방 기본 정보 출력
+
+        // 메서드 오버라이딩
+        public virtual string GetInfo()
+        {
+            return "상세 정보 없음"; // 기본 구현 / 방 타입별 특징 설명
+        }          
     }
 }

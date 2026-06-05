@@ -52,13 +52,14 @@ namespace OOP_TeamProject
         // 추상 메서드
         public override string ToString()
         {
-            return "리셉션니스트 / 이름: " + Name +
-                   " / 나이: " + Age +
-                   " / 전화번호: " + PhoneNumber +
-                   " / 근무시간: " + WorkHours +
-                   " / 월급: " + Salary +
-                   " / 언어: " + language +
-                   " / 근무교대: " + shift; // 리셉션니스트 정보 출력
+            return "리셉션니스트 / " + GetBasicInfo(); // protected 메서드 호출
+        }
+
+        // 메서드 오버라이딩
+        public override void PrintInfo()
+        {
+            Console.WriteLine(ToString());                                     // 기본 정보 출력
+            Console.WriteLine("언어: " + language + " / 근무교대: " + shift);  // 추가 정보 출력
         }
     }
 }

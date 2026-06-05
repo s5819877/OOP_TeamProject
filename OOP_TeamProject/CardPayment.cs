@@ -38,7 +38,14 @@ namespace OOP_TeamProject
 
         public override string ToString()
         {
-            return "카드 결제 / 결제 금액: " + Amount + "원 / " + (installment == 0 ? "일시불" : installment + "개월 할부") + " / 결제 완료: " + (IsPaid ? "O" : "X"); // 카드 결제 정보 출력
+            return "카드 결제 / " + GetBasicInfo(); // protected 메서드 호출
+        }
+
+        // 메서드 오버라이딩
+        public override void PrintReceipt()
+        {
+            Console.WriteLine(ToString());                                                                    // 기본 정보 출력
+            Console.WriteLine("할부: " + (installment == 0 ? "일시불" : installment + "개월 할부")); // 추가 정보 출력
         }
     }
 }

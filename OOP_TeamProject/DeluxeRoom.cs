@@ -40,9 +40,10 @@ namespace OOP_TeamProject
         // 추상 메서드 구현
         public override string ToString()
         {
-            return "[디럭스룸] " + RoomNumber + "호 / 1박 " + Price + "원 / 최대 " + MaxGuests + "인 / " + bedType + " / " + bathroomType + " / 자쿠지: " + (hasJacuzzi ? "O" : "X"); // 방 정보 출력
+            return "[디럭스룸] " + GetBasicInfo(); // protected 메서드 호출
         }
 
+        // 메서드 오버라이딩
         public override string GetInfo()
         {
             return "침대 타입: " + bedType + " / 욕실 타입: " + bathroomType + " / 자쿠지: " + (hasJacuzzi ? "O" : "X"); // 디럭스룸 특징 출력

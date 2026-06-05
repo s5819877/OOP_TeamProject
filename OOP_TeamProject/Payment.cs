@@ -4,8 +4,8 @@ using System.Text;
 
 namespace OOP_TeamProject
 {
-    // 추상 클래스 3
-    abstract class Payment
+    // 추상 클래스 3 + 인터페이스
+    abstract class Payment : IPayable
     {
         // 필드
         private double amount;      // 결제 금액
@@ -47,5 +47,17 @@ namespace OOP_TeamProject
         // 추상 메서드 (자식 클래스마다 다르게 구현)
         public abstract void Pay();                 // 결제 
         public abstract override string ToString(); // 결제 정보 출력 
+
+        // protected 멤버
+        protected string GetBasicInfo()
+        {
+            return "결제 금액: " + Amount + "원 / 결제 날짜: " + PayDate.ToString("yyyy-MM-dd") + " / 결제 완료: " + (IsPaid ? "O" : "X"); // 기본 정보 반환
+        }
+
+        // 메서드 오버라이딩
+        public virtual void PrintReceipt()
+        {
+            Console.WriteLine("상세 정보 없음"); // 기본 구현
+        }
     }
 }

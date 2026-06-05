@@ -26,9 +26,10 @@ namespace OOP_TeamProject
         // 추상 메서드 구현
         public override string ToString()
         {
-            return "[스위트룸] " + RoomNumber + "호 / 1박 " + Price + "원 / 최대 " + MaxGuests + "인 / 프라이빗 풀: " + (hasPrivatePool ? "O" : "X"); // 방 정보 출력
+            return "[스위트룸] " + GetBasicInfo(); // protected 메서드 호출
         }
 
+        // 메서드 오버라이딩
         public override string GetInfo()
         {
             return "킹 침대 1개 / 더블 침대 4개 / 샤워부스 / 욕조 / 프라이빗 풀: " + (hasPrivatePool ? "O" : "X"); // 스위트룸 특징 출력

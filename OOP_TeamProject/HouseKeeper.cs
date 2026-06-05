@@ -31,12 +31,14 @@ namespace OOP_TeamProject
 
         public override string ToString()
         {
-            return "하우스키퍼 / 이름: " + Name +
-                   " / 나이: " + Age +
-                   " / 전화번호: " + PhoneNumber +
-                   " / 근무시간: " + WorkHours +
-                   " / 월급: " + Salary +
-                   " / 담당 업무: " + duty; // 하우스키퍼 정보 출력
+            return "하우스키퍼 / " + GetBasicInfo(); // protected 메서드 호출
+        }
+
+        // 메서드 오버라이딩
+        public override void PrintInfo()
+        {
+            Console.WriteLine(ToString());           // 기본 정보 출력
+            Console.WriteLine("담당 업무: " + duty); // 추가 정보 출력
         }
     }
 }

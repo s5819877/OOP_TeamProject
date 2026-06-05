@@ -4,7 +4,7 @@ using System.Text;
 
 namespace OOP_TeamProject
 {
-    class Reservation
+    class Reservation : IValidatable
     {
         // 필드
         private static Random random = new Random();    // 랜덤 객체 (모든 예약이 공유)
@@ -79,6 +79,28 @@ namespace OOP_TeamProject
             this.guest = guest;                                         // 손님 정보 초기화
             this.payment = payment;                                     // 결제 정보 초기화
             this.totalPrice = stayPeriod.GetNights() * room.Price;      // 총 금액 계산
+        }
+
+        // out 키워드
+        public bool Validate(out string errorMessage)
+        {
+            if (stayPeriod.checkInDate < DateTime.Today)
+            {
+                errorMessage = "체크인 날짜가 오늘 이전입니다.";
+                return false;
+            }
+            if (stayPeriod.checkOutDate <= stayPeriod.checkInDate)
+            {
+                errorMessage = "체크아웃 날짜가 체크인 날짜보다 앞입니다.";
+                return false;
+            }
+            if (guest.NumberOfGuests > room.MaxGuests)
+            {
+                errorMessage = "인원이 최대 인원을 초과합니다.";
+                return false;
+            }
+            errorMessage = ""; // 오류 없음
+            return true;
         }
 
         // 메서드 오버라이딩 (object 클래스)

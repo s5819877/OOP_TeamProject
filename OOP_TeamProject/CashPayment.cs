@@ -39,7 +39,14 @@ namespace OOP_TeamProject
 
         public override string ToString()
         {
-            return "현금 결제 / 결제 금액: " + Amount + "원 / 받은 금액: " + receivedAmount + "원 / 거스름돈: " + change + "원 / 결제 완료: " + (IsPaid ? "O" : "X"); // 현금 결제 정보 출력
+            return "현금 결제 / " + GetBasicInfo(); // protected 메서드 호출
+        }
+
+        // 메서드 오버라이딩
+        public override void PrintReceipt()
+        {
+            Console.WriteLine(ToString());                                                    // 기본 정보 출력
+            Console.WriteLine("받은 금액: " + receivedAmount + "원 / 거스름돈: " + change + "원"); // 추가 정보 출력
         }
     }
 }
