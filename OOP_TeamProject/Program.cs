@@ -24,7 +24,7 @@
                     case "6": CheckIn(); break;                   // 체크인
                     case "7": CheckOut(); break;                  // 체크아웃
                     case "8": PrintStaffs(); break;               // 직원 목록 보기
-                    case "9": running = false; break;             // 종료          
+                    case "0": running = false; break;             // 종료          
                     default: Console.WriteLine("잘못된 입력입니다."); break;
                 }
             }
@@ -34,7 +34,7 @@
 
         static void PrintMenu()
         {
-            Console.WriteLine("\n--- 메뉴 ---");
+            Console.WriteLine("\n----- 메뉴 -----");
             Console.WriteLine("1. 객실 목록 보기");
             Console.WriteLine("2. 예약하기");
             Console.WriteLine("3. 예약 취소");
@@ -43,7 +43,7 @@
             Console.WriteLine("6. 체크인");
             Console.WriteLine("7. 체크아웃");
             Console.WriteLine("8. 직원 목록 보기");
-            Console.WriteLine("9. 종료");
+            Console.WriteLine("0. 종료");
             Console.Write("선택: ");
         }
 
@@ -82,6 +82,11 @@
                 {
                     throw new RoomAlreadyBookedException(roomNumber);
                 }
+
+                // 조식 여부 선택
+                Console.Write("조식 신청하시겠습니까? (Y/N): ");
+                string breakfastInput = Console.ReadLine();
+                room.HasBreakfast = (breakfastInput.ToUpper() == "Y"); 
 
                 // 5. 손님 정보 입력
                 Console.Write("이름 입력: ");
@@ -169,7 +174,7 @@
                 {
                     Console.Write("예약 번호 입력: ");
                     string reservationId = Console.ReadLine();
-                    Reservation reservation = hotel[reservationId];
+                    reservation = hotel[reservationId];
                 }
                 else if (input == "2")
                 {
@@ -242,6 +247,11 @@
                 {
                     throw new RoomAlreadyBookedException(roomNumber);
                 }
+
+                // 조식 여부 선택
+                Console.Write("조식 신청하시겠습니까? (Y/N): ");
+                string breakfastInput = Console.ReadLine();
+                room.HasBreakfast = (breakfastInput.ToUpper() == "Y");
 
                 // 5. 손님 정보 입력
                 Console.Write("이름 입력: ");

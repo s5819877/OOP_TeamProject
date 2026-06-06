@@ -23,7 +23,7 @@ namespace OOP_TeamProject
 
         public double Price
         {
-            get { return price; }
+            get { return hasBreakfast ? price + (20000 * maxGuests) : price; } // 조식 있으면 1인당 20000원 추가
         }
 
         public string RoomType

@@ -18,7 +18,7 @@ namespace OOP_TeamProject
         // 생성자
         public SuiteRoom(int roomNumber, bool hasBreakfast, bool hasPrivatePool)
             // base 키워드
-            : base(roomNumber, 400000, "Suite", hasBreakfast, 6) // 가격, 최대인원 고정
+            : base(roomNumber, hasPrivatePool ? 400000 : 300000, "Suite", hasBreakfast, 6) // 가격, 최대인원 고정
         {
             this.hasPrivatePool = hasPrivatePool; // 프라이빗 풀 여부 초기화
         }
