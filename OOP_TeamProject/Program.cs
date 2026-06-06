@@ -6,6 +6,7 @@
         static void Main(string[] args)
         {
             Console.WriteLine("=== 호텔 시스템 ===");
+            hotel.LoadData(); // 데이터 불러오기
 
             bool running = true;
 
@@ -19,12 +20,17 @@
                     case "1": hotel.PrintAllRooms(); break;       // 객실 목록 보기
                     case "2": MakeReservation(); break;           // 예약하기
                     case "3": CancelReservation(); break;         // 예약 취소
-                    case "4": hotel.PrintAllReservations(); break; // 예약 목록 보기
+                    case "4": ShowReservations(); break;          // 예약 목록 보기
                     case "5": WalkIn(); break;                    // 워크인
                     case "6": CheckIn(); break;                   // 체크인
                     case "7": CheckOut(); break;                  // 체크아웃
                     case "8": PrintStaffs(); break;               // 직원 목록 보기
-                    case "0": running = false; break;             // 종료          
+                    case "9": ShowMoney(); break;                 // 재정 현황
+                    case "10": ClearData(); break;                // 데이터 초기화
+                    case "0":
+                        hotel.SaveData(); // 데이터 저장
+                        running = false;
+                        break;             // 종료          
                     default: Console.WriteLine("잘못된 입력입니다."); break;
                 }
             }
@@ -43,6 +49,8 @@
             Console.WriteLine("6. 체크인");
             Console.WriteLine("7. 체크아웃");
             Console.WriteLine("8. 직원 목록 보기");
+            Console.WriteLine("9. 재정 현황");
+            Console.WriteLine("10. 데이터 초기화");
             Console.WriteLine("0. 종료");
             Console.Write("선택: ");
         }
@@ -51,11 +59,7 @@
         {
             try
             {
-                // 1. 객실 목록 보여주기
-                Console.WriteLine("\n=== 객실 목록 ===");
-                hotel.PrintAllRooms();
-
-                // 2. 예약 날짜 및 인원 입력
+                // 1. 예약 날짜 및 인원 입력
                 Console.Write("\n체크인 날짜 입력 (yyyy-MM-dd): ");
                 DateTime checkInDate = DateTime.Parse(Console.ReadLine());
 
@@ -65,11 +69,11 @@
                 Console.Write("인원 입력: ");
                 int numberOfGuests = int.Parse(Console.ReadLine());
 
-                // 3. 가능한 객실 목록 보여주기
+                // 2. 가능한 객실 목록 보여주기
                 Console.WriteLine("\n=== 예약 가능한 객실 ===");
                 hotel.PrintAllRooms(numberOfGuests); // 인원 수로 필터링
 
-                // 4. 방 번호 선택
+                // 3. 방 번호 선택
                 Console.Write("\n방 번호 선택: ");
                 int roomNumber = int.Parse(Console.ReadLine());
                 Room room = hotel[roomNumber];
@@ -83,8 +87,8 @@
                     throw new RoomAlreadyBookedException(roomNumber);
                 }
 
-                // 조식 여부 선택
-                Console.Write("조식 신청하시겠습니까? (Y/N): ");
+                // 4. 조식 여부 선택
+                Console.Write("조식 신청하시겠습니까?(인당 20000원) (Y/N): ");
                 string breakfastInput = Console.ReadLine();
                 room.HasBreakfast = (breakfastInput.ToUpper() == "Y"); 
 
@@ -135,6 +139,7 @@
 
                 room.Book();
                 hotel.AddReservation(reservation);
+                hotel.AddMoney(reservation.TotalPrice); // 수입 추가
 
                 // 10. 예약 번호 출력
                 NotifyAction notify = message => Console.WriteLine(message); // 알림 델리게이트, 람다식
@@ -158,6 +163,7 @@
                 Console.WriteLine("=========================="); // 구분선
             }
         }
+
         static void CancelReservation() // 예약 취소
         {
             try
@@ -194,6 +200,7 @@
                 hotel.CalculateRefund(reservation, out double refundAmount, out string refundMessage);
                 Console.WriteLine(refundMessage + " / 환불 금액: " + refundAmount + "원");
 
+                hotel.SubtractMoney(refundAmount); // 환불 차감
                 reservation.Room.Cancel();
                 hotel.RemoveReservation(reservation.ReservationId);
 
@@ -213,15 +220,51 @@
                 Console.WriteLine("=========================="); // 구분선
             }
         }
+
+        static void ShowReservations()
+        {
+            try
+            {
+                // 1. 예약 목록 출력
+                Console.WriteLine("\n=== 예약 목록 ===");
+                hotel.PrintAllReservations();
+
+                // 2. 예약 번호 선택
+                Console.Write("\n손님 정보를 볼 예약 번호 입력 (취소: 0): ");
+                string input = Console.ReadLine();
+
+                if (input == "0") return;
+
+                // 3. 예약 찾기
+                Reservation reservation = hotel[input];
+                if (reservation == null)
+                {
+                    throw new ReservationNotFoundException(input);
+                }
+
+                // 4. 손님 정보 출력
+                Console.WriteLine("\n=== 손님 정보 ===");
+                Console.WriteLine(reservation.Guest.ToString());
+            }
+            catch (ReservationNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("오류 발생: " + e.Message);
+            }
+            finally
+            {
+                Console.WriteLine("==========================");
+            }
+        }
+
         static void WalkIn() // 워크인
         {
             try
             {
-                // 1. 객실 목록 보여주기
-                Console.WriteLine("\n=== 객실 목록 ===");
-                hotel.PrintAllRooms();
-
-                // 2. 인원 및 체크아웃 날짜 입력
+                // 1. 인원 및 체크아웃 날짜 입력
                 Console.Write("\n인원 입력: ");
                 int numberOfGuests = int.Parse(Console.ReadLine());
 
@@ -230,11 +273,11 @@
 
                 DateTime checkInDate = DateTime.Today; // 체크인 날짜는 오늘
 
-                // 3. 가능한 객실 목록 보여주기
+                // 2. 가능한 객실 목록 보여주기
                 Console.WriteLine("\n=== 예약 가능한 객실 ===");
                 hotel.PrintAllRooms(numberOfGuests); // 인원 수로 필터링
 
-                // 4. 방 번호 선택
+                // 3. 방 번호 선택
                 Console.Write("\n방 번호 선택: ");
                 int roomNumber = int.Parse(Console.ReadLine());
                 Room room = hotel[roomNumber];
@@ -248,7 +291,7 @@
                     throw new RoomAlreadyBookedException(roomNumber);
                 }
 
-                // 조식 여부 선택
+                // 4. 조식 여부 선택
                 Console.Write("조식 신청하시겠습니까? (Y/N): ");
                 string breakfastInput = Console.ReadLine();
                 room.HasBreakfast = (breakfastInput.ToUpper() == "Y");
@@ -322,6 +365,7 @@
 
                 room.Book();
                 hotel.AddReservation(reservation);
+                hotel.AddMoney(reservation.TotalPrice); // 수입 추가
 
                 // 10. 완료 출력
                 NotifyAction notify = message => Console.WriteLine(message); // 알림 델리게이트, 람다식
@@ -349,6 +393,7 @@
                 Console.WriteLine("=========================="); // 구분선
             }
         }
+
         static void CheckIn() // 체크인
         {
             try
@@ -395,6 +440,7 @@
                 Console.WriteLine("=========================="); // 구분선
             }
         }
+
         static void CheckOut() // 체크아웃
         {
             try
@@ -434,7 +480,8 @@
                 Console.WriteLine("=========================="); // 구분선
             }
         }
-        static void PrintStaffs() // 직원 목록 보기
+
+        static void PrintStaffs()
         {
             try
             {
@@ -443,12 +490,16 @@
                 List<Staff> staffList = hotel.GetAllStaffs();
                 for (int i = 0; i < staffList.Count; i++)
                 {
-                    Console.WriteLine((i + 1) + ". " + staffList[i].ToString()); // 번호 + 기본 정보
+                    Console.WriteLine((i + 1) + ". " + staffList[i].ToString());
                 }
 
                 // 2. 직원 선택
-                Console.Write("\n직원 번호 선택: ");
-                int index = int.Parse(Console.ReadLine()) - 1;
+                Console.Write("\n직원 번호 선택 (취소: 0): ");
+                string input = Console.ReadLine();
+
+                if (input == "0") return; // 취소
+
+                int index = int.Parse(input) - 1;
 
                 if (index < 0 || index >= staffList.Count)
                 {
@@ -466,7 +517,24 @@
             }
             finally
             {
-                Console.WriteLine("=========================="); // 구분선
+                Console.WriteLine("==========================");
+            }
+        }
+
+        static void ShowMoney() // 재정 현황
+        {
+            Console.WriteLine("\n=== 재정 현황 ===");
+            Console.WriteLine("현재 잔액: " + hotel.Money + "원");
+        }
+
+        static void ClearData()
+        {
+            Console.Write("정말 초기화하시겠습니까? (Y/N): ");
+            string input = Console.ReadLine();
+            if (input.ToUpper() == "Y")
+            {
+                hotel.ClearData();
+                Console.WriteLine("초기화 완료!");
             }
         }
     }

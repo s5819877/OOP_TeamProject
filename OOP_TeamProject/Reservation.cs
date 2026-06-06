@@ -63,7 +63,7 @@ namespace OOP_TeamProject
             get { return totalPrice; }                  // 총 금액 반환
         }
 
-        // 생성자
+        // 생성자 (새로 예약할 때)
         public Reservation(Room room, Guest guest, DateTime checkInDate, DateTime checkOutDate, Payment payment)
         {
             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // 사용할 문자 목록
@@ -79,6 +79,18 @@ namespace OOP_TeamProject
             this.guest = guest;                                         // 손님 정보 초기화
             this.payment = payment;                                     // 결제 정보 초기화
             this.totalPrice = stayPeriod.GetNights() * room.Price;      // 총 금액 계산
+        }
+
+        // 생성자 (파일에서 불러올 때)
+        public Reservation(string reservationId, Room room, Guest guest, DateTime checkInDate, DateTime checkOutDate, Payment payment)
+        {
+            this.reservationId = reservationId;                                 // 예약 번호 직접 설정
+            this.reservationDate = DateTime.Now;                                // 예약 날짜는 현재 날짜
+            this.stayPeriod = new DateRange(checkInDate, checkOutDate);         // 체크인/아웃 날짜 묶음
+            this.room = room;                                                   // 방 정보 초기화
+            this.guest = guest;                                                 // 손님 정보 초기화
+            this.payment = payment;                                             // 결제 정보 초기화
+            this.totalPrice = stayPeriod.GetNights() * room.Price;              // 총 금액 계산
         }
 
         // out 키워드

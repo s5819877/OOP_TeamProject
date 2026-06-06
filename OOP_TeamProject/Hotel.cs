@@ -10,6 +10,13 @@ namespace OOP_TeamProject
         private Repository<Room> rooms;                // 객실 목록
         private Repository<Reservation> reservations;  // 예약 목록
         private Repository<Staff> staffs;              // 직원 목록
+        private double money; // 보유 금액
+
+        // 속성
+        public double Money
+        {
+            get { return money; } // 보유 금액 반환
+        }
 
         // 생성자 (객체 만들 때 실행되는 초기화 코드)
         public Hotel()
@@ -17,6 +24,7 @@ namespace OOP_TeamProject
             this.rooms = new Repository<Room>();               // 객실 저장소 초기화
             this.reservations = new Repository<Reservation>(); // 예약 저장소 초기화
             this.staffs = new Repository<Staff>();             // 직원 저장소 초기화
+            this.money = 0; // 처음엔 0원
 
             // 스탠다드룸 등록 (101 ~ 204호)
             rooms.Add(new StandardRoom(101, false, "더블", "샤워부스"));
@@ -176,6 +184,18 @@ namespace OOP_TeamProject
             return (Receptionist)staffs.Find(s => s is Receptionist && ((Receptionist)s).Shift == currentShift); // 현재 교대 근무자 찾기
         }
 
+        // 메서드 (수입 추가)
+        public void AddMoney(double amount)
+        {
+            money += amount; 
+        }
+
+        // 메서드 (환불 차감)
+        public void SubtractMoney(double amount)
+        {
+            money -= amount; 
+        }
+
         // 방 번호로 방 찾기 (인덱서, 람다식)
         public Room this[int roomNumber]
         {
@@ -186,6 +206,114 @@ namespace OOP_TeamProject
         public Reservation this[string reservationId]
         {
             get { return reservations.Find(r => r.ReservationId == reservationId); } // 예약 번호로 예약 찾기
+        }
+
+        // 메서드 (데이터 저장)
+        public void SaveData()
+        {
+            // 재정 현황 저장
+            System.IO.File.WriteAllText("money.txt", money.ToString());
+
+            // 객실 상태 저장
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            foreach (Room room in rooms.GetAll())
+            {
+                sb.AppendLine(room.RoomNumber + "," + room.IsAvailable + "," + room.HasBreakfast);
+            }
+            System.IO.File.WriteAllText("rooms.txt", sb.ToString());
+
+            // 예약 목록 저장
+            sb.Clear();
+            foreach (Reservation reservation in reservations.GetAll())
+            {
+                sb.AppendLine(reservation.ReservationId + "," +
+                              reservation.Room.RoomNumber + "," +
+                              reservation.Guest.Name + "," +
+                              reservation.Guest.Age + "," +
+                              reservation.Guest.PhoneNumber + "," +
+                              reservation.Guest.NumberOfGuests + "," +
+                              reservation.CheckInDate.ToString("yyyy-MM-dd") + "," +
+                              reservation.CheckOutDate.ToString("yyyy-MM-dd") + "," +
+                              reservation.TotalPrice + "," +
+                              reservation.Payment.BookingType);
+            }
+            System.IO.File.WriteAllText("reservations.txt", sb.ToString());
+        }
+        
+        // 메서드 (데이터 불러오기)
+        public void LoadData()
+        {
+            // 재정 현황 불러오기
+            if (System.IO.File.Exists("money.txt"))
+            {
+                money = double.Parse(System.IO.File.ReadAllText("money.txt"));
+            }
+
+            // 객실 상태 불러오기
+            if (System.IO.File.Exists("rooms.txt"))
+            {
+                string[] lines = System.IO.File.ReadAllLines("rooms.txt");
+                foreach (string line in lines)
+                {
+                    if (line == "") continue;
+                    string[] parts = line.Split(',');
+                    int roomNumber = int.Parse(parts[0]);
+                    bool isAvailable = bool.Parse(parts[1]);
+                    bool hasBreakfast = bool.Parse(parts[2]);
+
+                    Room room = this[roomNumber]; // 인덱서로 방 찾기
+                    if (room != null)
+                    {
+                        room.IsAvailable = isAvailable;
+                        room.HasBreakfast = hasBreakfast;
+                    }
+                }
+            }
+
+            // 예약 목록 불러오기
+            if (System.IO.File.Exists("reservations.txt"))
+            {
+                string[] lines = System.IO.File.ReadAllLines("reservations.txt");
+                foreach (string line in lines)
+                {
+                    if (line == "") continue;
+                    string[] parts = line.Split(',');
+
+                    string reservationId = parts[0];
+                    int roomNumber = int.Parse(parts[1]);
+                    string name = parts[2];
+                    int age = int.Parse(parts[3]);
+                    string phoneNumber = parts[4];
+                    int numberOfGuests = int.Parse(parts[5]);
+                    DateTime checkInDate = DateTime.Parse(parts[6]);
+                    DateTime checkOutDate = DateTime.Parse(parts[7]);
+                    double totalPrice = double.Parse(parts[8]);
+                    string bookingType = parts[9];
+
+                    Room room = this[roomNumber];
+                    Guest guest = new Guest(name, age, phoneNumber, numberOfGuests);
+                    Payment payment = new CardPayment(totalPrice, bookingType, 0);
+
+                    Reservation reservation = new Reservation(reservationId, room, guest, checkInDate, checkOutDate, payment);
+                    reservations.Add(reservation);
+                }
+            }
+        }
+        // 메서드 (파일 초기화)
+        public void ClearData()
+        {
+            System.IO.File.WriteAllText("money.txt", "0");       // 재정 초기화
+            System.IO.File.WriteAllText("rooms.txt", "");         // 객실 상태 초기화
+            System.IO.File.WriteAllText("reservations.txt", ""); // 예약 목록 초기화
+            money = 0;                                            // 재정 초기화
+            reservations = new Repository<Reservation>();         // 예약 목록 초기화
+
+            // 객실 상태 초기화
+            foreach (Room room in rooms.GetAll())
+            {
+                room.IsAvailable = true;   // 예약 가능으로 변경
+                room.HasBreakfast = false; // 조식 없음으로 변경
+            }
         }
     }
 }
