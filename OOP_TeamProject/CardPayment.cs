@@ -44,7 +44,7 @@ namespace OOP_TeamProject
         // 메서드 오버라이딩
         public override void PrintReceipt()
         {
-            Console.WriteLine(ToString());                                                                    // 기본 정보 출력
+            Console.WriteLine(ToString());                                                           // 기본 정보 출력
             Console.WriteLine("할부: " + (installment == 0 ? "일시불" : installment + "개월 할부")); // 추가 정보 출력
         }
     }

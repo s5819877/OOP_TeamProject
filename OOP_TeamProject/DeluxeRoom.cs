@@ -30,7 +30,7 @@ namespace OOP_TeamProject
         // 생성자
         public DeluxeRoom(int roomNumber, bool hasBreakfast, string bedType, string bathroomType, bool hasJacuzzi)
             // base 키워드
-            : base(roomNumber, hasJacuzzi ? 250000 : 200000, "Deluxe", hasBreakfast, 4) // 자쿠지 있으면 130000 없으면 100000
+            : base(roomNumber, hasJacuzzi ? 250000 : 200000, "Deluxe", hasBreakfast, 4) // 자쿠지 있으면 250000 없으면 200000
         {
             this.bedType = bedType;           // 침대 타입 초기화
             this.bathroomType = bathroomType; // 욕실 타입 초기화

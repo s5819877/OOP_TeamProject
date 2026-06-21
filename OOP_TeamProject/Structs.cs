@@ -20,21 +20,4 @@ namespace OOP_TeamProject
             return (checkOutDate - checkInDate).Days; // 숙박 일수 계산
         }
     }
-
-    // 아직 구현 안 함 (안 쓸 수도)
-    /*
-    struct RoomInfo
-    {
-        public int roomNumber;   // 방 번호
-        public string roomType;  // 방 타입
-        public double price;     // 가격
-    }
-
-    struct GuestInfo
-    {
-        public string name;        // 이름
-        public int age;            // 나이
-        public string phoneNumber; // 전화번호
-    }
-    */
 }

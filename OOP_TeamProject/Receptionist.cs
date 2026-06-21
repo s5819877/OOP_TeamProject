@@ -31,7 +31,7 @@ namespace OOP_TeamProject
         }
 
         // 추상 메서드
-        public override void DoWork() // 너무 간단함
+        public override void DoWork() 
         {
             Console.WriteLine(Name + " 직원이 프런트 데스크에서 근무합니다."); // 프런트 근무
         }
@@ -40,13 +40,11 @@ namespace OOP_TeamProject
         public void CheckIn(Reservation reservation)
         {
             Console.WriteLine(reservation.Guest.Name + " 손님 체크인 처리 완료"); // 체크인 처리
-            // TODO : 체크인 과정 채우기
         }
 
         public void CheckOut(Reservation reservation)
         {
             Console.WriteLine(reservation.Guest.Name + " 손님 체크아웃 처리 완료"); // 체크아웃 처리
-            // TODO : 체크아웃 과정 채우기
         }
 
         // 추상 메서드
